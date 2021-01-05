@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Stijn Lodder</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.4.3/css/ol.css" type="text/css">
+<script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.4.3/build/ol.js"></script>
+<style>
+    body,h1,h2,h3,h4,h5,h6,button {font-family: "Bahnschrift", sans-serif}
+</style>
+<style>
+    html, body {
+    margin:0px;
+    min-height: 200px;
+    }
+    .map {
+        float: left;
+        width: 100vw;
+        height: 100vh;
+    }
+    .columnInfo{
+        position: absolute;
+        top: 25px;
+        right: 25px;
+        background-color: #FFFFFF;
+        border-radius: 10px;
+        border: 2px solid #AA0000; 
+        width: 350px;
+    }
+    .columnLegend{
+        position: absolute;
+        top: 10px;
+        left: 50px;
+        background-color: rgb(241,241,241);
+        border-radius: 10px;
+        border: 2px solid #AA0000;
+        width: 120px;
+        padding: 2px;
+    }
+    table {
+        border-radius: 20px;
+        border-collapse: collapse;
+        width: 100%;
+    }
+    th, td {
+        text-align: center;
+    }
+    #t01 tr:nth-child(even) {
+    background-color: #ccc;
+    }
+    #t01 tr:nth-child(odd) {
+    background-color: #fff;
+    }
+    #t01 th {
+    background-color: #AA0000;
+    color: white;
+    }
+    .wrapper {
+    position: relative;
+    }
+    #title{
+        text-align: center;
+        height: 10px
+    }
+    p{
+        text-align: center;
+    }
+
+    #mydiv {
+    position: absolute;
+    z-index: 9;
+    background-color: #f1f1f1;
+    border: 1px solid #d3d3d3;
+    text-align: center;
+    }
+
+    #mydivheader {
+    padding: 10px;
+    cursor: move;
+    z-index: 10;
+    background-color: #2196F3;
+    color: #fff;
+    }
+
+    .cmap-button {
+        background-color: rgba(0, 0, 0, 0);
+        border: none;
+        font-size: 16px;
+    }
+    .colorbar{
+        width: 100px;
+        margin: 0 auto;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+</style>
+</head>
+
+<body>
+    
+    <!---->
+<div class="wrapper">
+    <div id="map" class="map"></div>
+    <div class="columnInfo" id="mydiv">
+        <h2 id="title">MotoLogger</h2>
+        <!--<h3 id="title">Dashboard</h3>-->
+        <button onclick="example()">Laad Voorbeeld</button>
+        <button onclick="routes()">Laad Routes</button>
+        <table id="t01">
+            <tr>
+                <th>Property</th>
+                <th>Mean</th>
+                <th>Min</th>
+                <th>Max</th>
+            </tr>
+            <tr>
+                <td><button class="cmap-button" onClick="setCurrent_Property('speed')">Snelheid</button></td>
+                <td id="speed-mean">-</td>
+                <td id="speed-min">-</td>
+                <td id="speed-max">-</td>
+            </tr>
+            <tr>
+                <td><button class="cmap-button" onClick="setCurrent_Property('elevation')">Hoogte</button></td>
+                <td id="height-mean">-</td>
+                <td id="height-min">-</td>
+                <td id="height-max">-</td>
+            </tr>
+            <tr>
+                <td><button class="cmap-button" onClick="setCurrent_Property('bearing')">Richting</button></td>
+                <td id="bearing-mean">-</td>
+                <td id="bearing-min">-</td>
+                <td id="bearing-max">-</td>
+            </tr>
+        </table>
+        <canvas id="Chart1" style="height: 250px; width: 95%; align-content: center;"></canvas>
+        <!---->
+        <button onclick="HideSats()">Satelliet Data</button>
+        <div id="sats">
+        <table id="t01">
+            <tr>
+                <th>Property</th>
+                <th>Mean</th>
+                <th>Min</th>
+                <th>Max</th>
+            </tr>
+            <tr>
+                <td><button class="cmap-button" onClick="setCurrent_Property('nsat')">#Sat</button></td>
+                <td id="nsat-mean">-</td>
+                <td id="nsat-min">-</td>
+                <td id="nsat-max">-</td>
+            </tr>
+            <tr>
+                <td><button class="cmap-button" onClick="setCurrent_Property('HDOP')">HDOP</button></td>
+                <td id="HDOP-mean">-</td>
+                <td id="HDOP-min">-</td>
+                <td id="HDOP-max">-</td>
+            </tr>
+            <tr>
+                <td><button class="cmap-button" onClick="setCurrent_Property('VDOP')">VDOP</button></td>
+                <td id="VDOP-mean">-</td>
+                <td id="VDOP-min">-</td>
+                <td id="VDOP-max">-</td>
+            </tr>
+            <tr>
+                <td><button class="cmap-button" onClick="setCurrent_Property('PDOP')">PDOP</button></td>
+                <td id="PDOP-mean">-</td>
+                <td id="PDOP-min">-</td>
+                <td id="PDOP-max">-</td>
+            </tr>
+        </table>
+        <canvas id="Chart2" style="height: 250px; width: 95%; align-content: center;"></canvas>
+        </div>
+        <p style="height: 8px;">Stijn Lodder</p>
+    </div>
+
+    <div class="columnLegend" id="mydiv">
+        Legend
+        <p id="current_property"></p>
+        <div class="colorbar" style=" background-image: linear-gradient(to right, rgb(50,50,50) 0%, rgb(255,255,255) 100%);">
+            <p id="cbartext" style="text-align:center;">
+                -<span style="float: left">0</span><span style="float:right;">100</span>
+            </p>
+        </div>
+        <button onclick="setCurrent_Property('No Points')">Geen Punten</button>
+        <button onclick="setBasisBW()">Zwart/Wit</button>
+        <br>
+    </div>
+</div>
+<script src="routes.js"></script>
+<script src="colormaps.js"></script>
+<script src="draganddrop.js"></script>
+<script src="symbology.js"></script>
+<script src='plot.js'></script>
+<script src='main.js'></script>
+<script src='dragging.js'></script>
+</body>
+
+</html>
