@@ -36,15 +36,10 @@ function CollectInfo(feats){
     for (var i = 1; i <= count; i++) {
         epochs.push(i);
         chart1.data.labels.push(i)
-        chart2.data.labels.push(i)
     }
 
     AddToChart1(speeds, "Speed");
     AddToChart1(elevations, "Elevation");
-    AddToChart2(nsats, "# Sat");
-    AddToChart2(HDOPs, "HDOP");
-    AddToChart2(VDOPs, "VDOP");
-    AddToChart2(PDOPs, "PDOP");
 };
 
 function summary(array){
@@ -105,15 +100,10 @@ function CollectInfo2(feats){
     for (var i = 1; i <= count; i++) {
         epochs.push(i);
         chart1.data.labels.push(i)
-        chart2.data.labels.push(i)
     }
 
     AddToChart1(speeds, "Speed");
     AddToChart1(elevations, "Elevation");
-    AddToChart2(nsats, "# Sat");
-    AddToChart2(HDOPs, "HDOP");
-    AddToChart2(VDOPs, "VDOP");
-    AddToChart2(PDOPs, "PDOP");
 };
 
 function HideSats(){

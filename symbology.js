@@ -6,6 +6,9 @@ var current_opacity = 1;
 function setCurrent_Property(new_current){
     current_property = new_current;
     document.getElementById("current_property").innerHTML = current_property
+    if(new_current=='bearing'){current_colormap = "spectral-cycle"}
+    if(new_current=='speed'){current_colormap = "spectral"}
+    if(new_current=='elevation'){current_colormap = "spectral"}
     UpdateColormap(current_colormap)
 }
 

@@ -1,84 +1,142 @@
 <!DOCTYPE html>
 <html>
 <head>
+<title>Stijn Lodder</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<link rel="stylesheet" href="styling.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.4.3/css/ol.css" type="text/css">
+<script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.4.3/build/ol.js"></script>
 <style>
-body {
-  font-family: "Lato", sans-serif;
-}
-
-.sidepanel  {
-  width: 0;
-  position: fixed;
-  z-index: 1;
-  height: 250px;
-  top: 0;
-  left: 0;
-  background-color: #111;
-  overflow-x: hidden;
-  transition: 0.5s;
-  padding-top: 60px;
-}
-
-.sidepanel a {
-  padding: 8px 8px 8px 32px;
-  text-decoration: none;
-  font-size: 25px;
-  color: #818181;
-  display: block;
-  transition: 0.3s;
-}
-
-.sidepanel a:hover {
-  color: #f1f1f1;
-}
-
-.sidepanel .closebtn {
-  position: absolute;
-  top: 0;
-  right: 25px;
-  font-size: 36px;
-}
-
-.openbtn {
-  font-size: 20px;
-  cursor: pointer;
-  background-color: #111;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-}
-
-.openbtn:hover {
-  background-color:#444;
-}
+    body,h1,h2,h3,h4,h5,h6,button {font-family: "Bahnschrift", sans-serif}
 </style>
 </head>
 <body>
 
 <div id="mySidepanel" class="sidepanel">
-  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
-  <a href="#">About</a>
-  <a href="#">Services</a>
-  <a href="#">Clients</a>
-  <a href="#">Contact</a>
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+    <h2 id="title">Routes</h2>
+    <div>
+        <table class="infotable" id="t01">
+            <thead>
+                <tr>
+                    <th>Naam</th>
+                    <th>Controle</th>
+                </tr>
+            </thead>
+            <tbody id="t01bd">
+            </tbody>
+        </table>
+    </div>
+    <h2 id="title">Info</h2>
+
+    <div>
+        <table class="infotable" id="t02">
+            <tr>
+                <th>Parameter</th>
+                <th>Gemiddelde</th>
+                <th>Min</th>
+                <th>Max</th>
+            </tr>
+            <tr>
+                <td><button class="cmap-button" onClick="setCurrent_Property('speed')">Snelheid [km/h]</button></td>
+                <td id="speed-mean">-</td>
+                <td id="speed-min">-</td>
+                <td id="speed-max">-</td>
+            </tr>
+            <tr>
+                <td><button class="cmap-button" onClick="setCurrent_Property('elevation')">Hoogte [m]</button></td>
+                <td id="height-mean">-</td>
+                <td id="height-min">-</td>
+                <td id="height-max">-</td>
+            </tr>
+            <tr>
+                <td><button class="cmap-button" onClick="setCurrent_Property('bearing')">Richting [°]</button></td>
+                <td id="bearing-mean">-</td>
+                <td id="bearing-min">-</td>
+                <td id="bearing-max">-</td>
+            </tr>
+            <td><button class="cmap-button">Extra</button></td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+        </table>
+    </div>
+    <canvas id="Chart1" style="align-content: left; height: 200px;"></canvas>
+    <button onclick="setCurrent_Property('No Points')">Geen Punten</button>
+    <button onclick="setBasisBW()">Zwart/Wit</button>
+    <button onclick="HideSats()">Satelliet Data</button>
+    <br>
+    <br>
+    <div id="sats">
+        <table class="infotable" id="t03">
+            <tr>
+                <th>Property</th>
+                <th>Mean</th>
+                <th>Min</th>
+                <th>Max</th>
+            </tr>
+            <tr>
+                <td><button class="cmap-button" onClick="setCurrent_Property('nsat')">#Sat</button></td>
+                <td id="nsat-mean">-</td>
+                <td id="nsat-min">-</td>
+                <td id="nsat-max">-</td>
+            </tr>
+            <tr>
+                <td><button class="cmap-button" onClick="setCurrent_Property('HDOP')">HDOP</button></td>
+                <td id="HDOP-mean">-</td>
+                <td id="HDOP-min">-</td>
+                <td id="HDOP-max">-</td>
+            </tr>
+            <tr>
+                <td><button class="cmap-button" onClick="setCurrent_Property('VDOP')">VDOP</button></td>
+                <td id="VDOP-mean">-</td>
+                <td id="VDOP-min">-</td>
+                <td id="VDOP-max">-</td>
+            </tr>
+            <tr>
+                <td><button class="cmap-button" onClick="setCurrent_Property('PDOP')">PDOP</button></td>
+                <td id="PDOP-mean">-</td>
+                <td id="PDOP-min">-</td>
+                <td id="PDOP-max">-</td>
+            </tr>
+        </table>
+    </div>
+
 </div>
 
-<button class="openbtn" onclick="openNav()">☰ Toggle Sidepanel</button>  
-<h2>Collapsed Sidepanel</h2>
-<p>Click on the hamburger menu/bar icon to open the sidepanel.</p>
-
+<div class="wrapper">
+    <div id="map" class="map"></div>
+    <div>
+    </div>
+    <div class="columnInfo" id="mydiv">
+        <h2 id="title" uselessTage="WouterISBeter">MotoLogger</h2>
+        <!--<h3 id="title">Dashboard</h3>-->
+        <button onclick="example()">Laad Voorbeeld</button>
+        <button onclick="routes()">Laad Routes</button>
+        <button onclick="openNav()">Opties</button>
+        <button onclick="LayersToTable2()">filltable</button>
+        <p id="current_property"></p>
+        <div class="colorbar" style=" background-image: linear-gradient(to right, rgb(50,50,50) 0%, rgb(255,255,255) 100%);">
+            <p id="cbartext" style="text-align:center;">
+                -<span style="float: left">0</span><span style="float:right;">100</span>
+            </p>
+        </div>
+        <p id="info"></p>
+    </div>
+</div>
 
 
 
 
 <script>
 function openNav() {
-  document.getElementById("mySidepanel").style.width = "250px";
+  document.getElementById("mySidepanel").style.width = "500px";
 }
 
 function closeNav() {
-  document.getElementById("mySidepanel").style.width = "0";
+  document.getElementById("mySidepanel").style.width = "0px";
 }
 </script>
    
@@ -88,6 +146,5 @@ function closeNav() {
 <script src="symbology.js"></script>
 <script src='plot.js'></script>
 <script src='main.js'></script>
-<script src='dragging.js'></script>
 </body>
 </html> 
