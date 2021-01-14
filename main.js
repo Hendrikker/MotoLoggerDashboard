@@ -22,21 +22,6 @@ map = new ol.Map({
 function setBasisBW(){
     source.setUrl('http://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png');
 }
-    /*
-var map = new ol.Map({
-    interactions: ol.interaction.defaults().extend([dragAndDropInteraction]),
-    layers: [
-        new ol.layer.Tile({
-        source: new ol.source.OSM()
-        })
-    ],
-    target: 'map',
-    view: new ol.View({
-        center: ol.proj.fromLonLat([4.20, 51.82]),
-        zoom: 12
-    })
-});
-*/
 
 function example(){
     var examplesource = new ol.source.Vector({
@@ -74,6 +59,7 @@ function routes(){
             source: routesource,
             style: styleFunction
         });
+        routevector.values_.zIndex = 1;
         map.addLayer(routevector)
     });
 }
@@ -81,9 +67,10 @@ function routes(){
 dragAndDropInteraction.on('addfeatures', addFile )
 
 function addFile(event) {
-    console.log(event.features)
+    //console.log(event.features)
     ClearChart()
-    CollectInfo(event.features)
+    CollectInfoGPX(event.features)
+    //CollectInfo(event.features)
     var vectorSource = new ol.source.Vector({
         features: event.features,
     });
@@ -135,7 +122,8 @@ var displayFeatureInfo = function (pixel) {
     } else {
       document.getElementById('info').innerHTML = '&nbsp;';
     }
-  };
+};
+
   map.on('pointermove', function (evt) {
     if (evt.dragging) {
       return;
@@ -143,3 +131,18 @@ var displayFeatureInfo = function (pixel) {
     var pixel = map.getEventPixel(evt.originalEvent);
     displayFeatureInfo(pixel);
   });
+  
+  map.on("click", function(e) {
+    var features = [];
+    var layers = []
+    map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
+        var geom = feature.get('geometry').getType();
+        if(geom == "MultiLineString"){
+            features.push(feature);
+            layers.push(layer);
+        }
+    });
+    map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
+        selectedGPX(feature, layer)
+    })
+});

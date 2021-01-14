@@ -15,7 +15,7 @@
 
 <div id="mySidepanel" class="sidepanel">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
-    <h2 id="title">Routes</h2>
+    <h2 class="title">Routes</h2>
     <div>
         <table class="infotable" id="t01">
             <thead>
@@ -28,8 +28,25 @@
             </tbody>
         </table>
     </div>
-    <h2 id="title">Info</h2>
 
+    <h2 class="title" id="infotitle">Info</h2>
+    <div>
+        <table class="infotable" id="t04">
+            <tr>
+                <th>Parameter</th>
+                <th>Waarde</th>
+            </tr>
+            <tr>
+                <td>Tijd</td>
+                <td id="time">-</td>
+            </tr>
+            <tr>
+                <td>Afstand</td>
+                <td id="distancevalue">-</td>
+            </tr>
+        </table>
+    </div>
+    <br>
     <div>
         <table class="infotable" id="t02">
             <tr>
@@ -50,20 +67,22 @@
                 <td id="height-min">-</td>
                 <td id="height-max">-</td>
             </tr>
-            <tr>
+            <!--<tr>
                 <td><button class="cmap-button" onClick="setCurrent_Property('bearing')">Richting [°]</button></td>
                 <td id="bearing-mean">-</td>
                 <td id="bearing-min">-</td>
                 <td id="bearing-max">-</td>
-            </tr>
-            <td><button class="cmap-button">Extra</button></td>
+            </tr>-->
+            <!--<td><button class="cmap-button">Extra</button></td>
                 <td>-</td>
                 <td>-</td>
                 <td>-</td>
-            </tr>
+            </tr>-->
         </table>
     </div>
+
     <canvas id="Chart1" style="align-content: left; height: 200px;"></canvas>
+
     <button onclick="setCurrent_Property('No Points')">Geen Punten</button>
     <button onclick="setBasisBW()">Zwart/Wit</button>
     <button onclick="HideSats()">Satelliet Data</button>
@@ -113,7 +132,7 @@
     <div class="columnInfo" id="mydiv">
         <h2 id="title" uselessTage="WouterISBeter">MotoLogger</h2>
         <!--<h3 id="title">Dashboard</h3>-->
-        <button onclick="example()">Laad Voorbeeld</button>
+        <!--<button onclick="example()">Laad Voorbeeld</button>-->
         <button onclick="routes()">Laad Routes</button>
         <button onclick="openNav()">Opties</button>
         <button onclick="LayersToTable2()">filltable</button>
@@ -139,7 +158,7 @@ function closeNav() {
   document.getElementById("mySidepanel").style.width = "0px";
 }
 </script>
-   
+<script src="processgpx.js"></script>
 <script src="routes.js"></script>
 <script src="colormaps.js"></script>
 <script src="draganddrop.js"></script>

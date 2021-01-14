@@ -147,7 +147,7 @@
     .wrapper {
     position: relative;
     }
-    #title{
+    .title{
         text-align: center;
         height: 10px
     }
