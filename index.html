@@ -85,7 +85,7 @@
 
     <button onclick="setCurrent_Property('No Points')">Geen Punten</button>
     <button onclick="setBasisBW()">Zwart/Wit</button>
-    <button onclick="HideSats()">Satelliet Data</button>
+    <!--<button onclick="HideSats()">Satelliet Data</button>-->
     <br>
     <br>
     <div id="sats">
@@ -135,7 +135,8 @@
         <!--<button onclick="example()">Laad Voorbeeld</button>-->
         <button onclick="routes()">Laad Routes</button>
         <button onclick="openNav()">Opties</button>
-        <button onclick="LayersToTable2()">filltable</button>
+        <!--<button onclick="LayersToTable()">filltable</button>-->
+        <button onclick="resetMap()">reset</button>
         <p id="current_property"></p>
         <div class="colorbar" style=" background-image: linear-gradient(to right, rgb(50,50,50) 0%, rgb(255,255,255) 100%);">
             <p id="cbartext" style="text-align:center;">
@@ -161,7 +162,7 @@ function closeNav() {
 <script src="processgpx.js"></script>
 <script src="routes.js"></script>
 <script src="colormaps.js"></script>
-<script src="draganddrop.js"></script>
+<script src="processjson.js"></script>
 <script src="symbology.js"></script>
 <script src='plot.js'></script>
 <script src='main.js'></script>

@@ -60,19 +60,28 @@ function routes(){
             style: styleFunction
         });
         routevector.values_.zIndex = 1;
-        map.addLayer(routevector)
+        map.addLayer(routevector);
     });
+    LayersToTable();
 }
 
 dragAndDropInteraction.on('addfeatures', addFile )
 
 function addFile(event) {
     //console.log(event.features)
-    ClearChart()
-    CollectInfoGPX(event.features)
+    ClearChart();
+    CollectInfoGPX(event.features);
     //CollectInfo(event.features)
+    //console.log(event.features);
+    var features = [];
+    event.features.forEach(element => {
+        if (element.getGeometry().getType()=="MultiLineString"){
+            features.push(element);
+        }
+    });
+    //console.log(features);
     var vectorSource = new ol.source.Vector({
-        features: event.features,
+        features: features,
     });
     map.addLayer( new ol.layer.Vector({
         source: vectorSource,
@@ -81,27 +90,28 @@ function addFile(event) {
     );
     //console.log(vectorSource.getExtent())
     map.getView().fit(vectorSource.getExtent());
+    LayersToTable();
 };
-
 function LayersToTable(){
-    var layers = map.getLayers()
-    layers.forEach(element => {
-        var name = element.values_.source.url_;
-        console.log(element.get('name'));
-        if (name != undefined && !namesintable.includes(name)){
+    var layers = map.getLayers();
+    for (var index = 2; index < layers.array_.length; index++) {
+        var url = layers.array_[index].values_.source.url_;
+        var name;
+        var id = layers.array_[index].getSource().ol_uid - 1;
+        if (url == undefined){
+            name = layers.array_[index].getSource().uidIndex_[id].values_.name;
+        }
+        if (url != undefined){
+            name = url.split("/");
+            name = name[name.length-1].split(".")[0];
+        }
+        if (!namesintable.includes(name)){
             namesintable.push(name);
             var content = document.getElementById("t01bd").innerHTML
-            var new_content = content+"<tr><td id='layername'><button class='cmap-button'>" + name + "</button></td><td id='control'>-</td></tr>"
+            var new_content = content+"<tr><td id='layername'><button class='cmap-button' onclick='selectFromTable(" + id + ")'>" + name + "</button></td><td id='control'>-</td></tr>"
             document.getElementById("t01bd").innerHTML = new_content;
         }
-    });
-}
-function LayersToTable2(){
-    var extent = map.getView().calculateExtent(map.getSize());
-    source.forEachFeatureInExtent(extent, function(feature){
-        // do something 
-        console.log(feature)
-    });
+    };
 }
 var displayFeatureInfo = function (pixel) {
     var features = [];
@@ -123,16 +133,14 @@ var displayFeatureInfo = function (pixel) {
       document.getElementById('info').innerHTML = '&nbsp;';
     }
 };
-
-  map.on('pointermove', function (evt) {
+map.on('pointermove', function (evt) {
     if (evt.dragging) {
       return;
     }
     var pixel = map.getEventPixel(evt.originalEvent);
     displayFeatureInfo(pixel);
-  });
-  
-  map.on("click", function(e) {
+});
+map.on("click", function(e) {
     var features = [];
     var layers = []
     map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
@@ -143,6 +151,17 @@ var displayFeatureInfo = function (pixel) {
         }
     });
     map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
-        selectedGPX(feature, layer)
+        selectedGPX(layer)
     })
+    console.log();
 });
+function resetMap(){
+    location.reload();
+    /*
+    var layers = map.getLayers();
+    for (var index = 0; index < layers.length; index++) {
+        var layer = array[index];
+        map.removeLayer(layer);
+    }
+    */
+}
