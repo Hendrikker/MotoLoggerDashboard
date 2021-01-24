@@ -16,7 +16,7 @@ map = new ol.Map({
     target: 'map',
     view: new ol.View({
         center: ol.proj.fromLonLat([4.20, 51.82]),
-        zoom: 12
+        zoom: 8.5
     })
 });
 function setBasisBW(){
@@ -63,6 +63,7 @@ function routes(){
         map.addLayer(routevector);
     });
     LayersToTable();
+    document.getElementById("routes-button").disabled = true;
 }
 
 dragAndDropInteraction.on('addfeatures', addFile )
@@ -108,7 +109,7 @@ function LayersToTable(){
         if (!namesintable.includes(name)){
             namesintable.push(name);
             var content = document.getElementById("t01bd").innerHTML
-            var new_content = content+"<tr><td id='layername'><button class='cmap-button' onclick='selectFromTable(" + id + ")'>" + name + "</button></td><td id='control'>-</td></tr>"
+            var new_content = content+"<tr><td id='layername'><button class='cmap-button' onclick='selectFromTable(" + id + ")'>" + name + "</button></td></tr>" //"</button></td><td id='control'>-</td></tr>"
             document.getElementById("t01bd").innerHTML = new_content;
         }
     };

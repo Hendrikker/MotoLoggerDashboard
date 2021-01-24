@@ -21,7 +21,6 @@
             <thead>
                 <tr>
                     <th>Naam</th>
-                    <th>Controle</th>
                 </tr>
             </thead>
             <tbody id="t01bd">
@@ -30,6 +29,7 @@
     </div>
 
     <h2 class="title" id="infotitle">Info</h2>
+    <p>Beschrijving van route/rit.</p>
     <div>
         <table class="infotable" id="t04">
             <tr>
@@ -46,7 +46,9 @@
             </tr>
         </table>
     </div>
+
     <br>
+
     <div>
         <table class="infotable" id="t02">
             <tr>
@@ -127,22 +129,20 @@
 
 <div class="wrapper">
     <div id="map" class="map"></div>
-    <div>
-    </div>
     <div class="columnInfo" id="mydiv">
-        <h2 id="title" uselessTage="WouterISBeter">MotoLogger</h2>
+        <b><p id="title">MotoLogger</p></b>
         <!--<h3 id="title">Dashboard</h3>-->
         <!--<button onclick="example()">Laad Voorbeeld</button>-->
-        <button onclick="routes()">Laad Routes</button>
+        <button id="routes-button" onclick="routes()">Laad Routes</button>
         <button onclick="openNav()">Opties</button>
         <!--<button onclick="LayersToTable()">filltable</button>-->
         <button onclick="resetMap()">reset</button>
-        <p id="current_property"></p>
-        <div class="colorbar" style=" background-image: linear-gradient(to right, rgb(50,50,50) 0%, rgb(255,255,255) 100%);">
+        <p id="current_property" hidden></p>
+        <!--<div class="colorbar" style=" background-image: linear-gradient(to right, rgb(50,50,50) 0%, rgb(255,255,255) 100%);">
             <p id="cbartext" style="text-align:center;">
                 -<span style="float: left">0</span><span style="float:right;">100</span>
             </p>
-        </div>
+        </div>-->
         <p id="info"></p>
     </div>
 </div>
@@ -152,9 +152,15 @@
 
 <script>
 function openNav() {
-  document.getElementById("mySidepanel").style.width = "500px";
+    var width = window.innerWidth;
+    if (width < 600){
+        document.getElementById("mySidepanel").style.width = "100%";
+    }
+    else
+    {
+        document.getElementById("mySidepanel").style.width = "300px";
+    }
 }
-
 function closeNav() {
   document.getElementById("mySidepanel").style.width = "0px";
 }
